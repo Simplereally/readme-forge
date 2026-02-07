@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReadmeForge — AI-Powered README Generator CLI</title>
+    <meta name="description" content="Generate beautiful README files from your codebase in seconds. AI-powered analysis for Node.js, Python, Go, and Rust projects. No API keys required.">
+    <meta name="keywords" content="readme generator, documentation generator, cli tool, npm package, readme automation">
+    
+    <meta property="og:title" content="ReadmeForge — AI-Powered README Generator">
+    <meta property="og:description" content="Generate beautiful README files from your codebase in seconds. No API keys required.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://simplereally.github.io/readme-forge/">
+    
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "ReadmeForge",
+        "description": "AI-powered README generator CLI that analyzes your codebase",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Cross-platform",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+    }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ═══════════════════════════════════════════════════════════════
+           FORGE DESIGN SYSTEM — Industrial Dark with Molten Accents
+           ═══════════════════════════════════════════════════════════════ */
+        
+        :root {
+            --forge-void: #0a0a0b;
+            --forge-charcoal: #141417;
+            --forge-gunmetal: #1c1c21;
+            --forge-steel: #2a2a32;
+            --forge-iron: #4a4a55;
+            --forge-silver: #8b8b99;
+            --forge-chrome: #c4c4d4;
+            --forge-white: #f0f0f5;
+            
+            --forge-ember: #ff6b35;
+            --forge-flame: #ff8c42;
+            --forge-spark: #ffb366;
+            --forge-heat: #ef4444;
+            --forge-glow: rgba(255, 107, 53, 0.12);
+            --forge-success: #22c55e;
+            
+            --font-display: 'Chakra Petch', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --space-3xl: 4rem;
+            
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            
+            --transition-fast: 150ms ease;
+            --transition-normal: 250ms ease;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-body);
+            background: var(--forge-void);
+            color: var(--forge-chrome);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        /* ═══════════════ NAVIGATION ═══════════════ */
+        
+        .forge-nav {
+            background: linear-gradient(180deg, var(--forge-charcoal) 0%, transparent 100%);
+            padding: var(--space-md) var(--space-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        
+        .forge-nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .forge-logo {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--forge-white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            letter-spacing: 0.5px;
+        }
+        
+        .forge-logo .icon {
+            font-size: 1.5rem;
+            filter: drop-shadow(0 0 8px var(--forge-ember));
+        }
+        
+        .forge-nav-links {
+            display: flex;
+            gap: var(--space-xs);
+        }
+        
+        .forge-nav-links a {
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--forge-silver);
+            text-decoration: none;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            transition: var(--transition-fast);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        
+        .forge-nav-links a:hover { color: var(--forge-ember); background: var(--forge-glow); }
+        .forge-nav-links a.active { color: var(--forge-ember); }
+        
+        /* ═══════════════ HERO ═══════════════ */
+        
+        .hero {
+            text-align: center;
+            padding: var(--space-3xl) var(--space-lg);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 600px;
+            background: radial-gradient(ellipse at center, var(--forge-glow) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 7vw, 4rem);
+            font-weight: 700;
+            color: var(--forge-white);
+            margin-bottom: var(--space-md);
+            letter-spacing: 2px;
+            position: relative;
+        }
+        
+        .hero h1 .accent { color: var(--forge-ember); }
+        
+        .hero .tagline {
+            font-size: 1.3rem;
+            color: var(--forge-silver);
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto var(--space-xl);
+        }
+        
+        .hero .badges {
+            display: flex;
+            gap: var(--space-sm);
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: var(--space-xl);
+        }
+        
+        .hero .badges img {
+            height: 22px;
+        }
+        
+        /* ═══════════════ INSTALL BOX ═══════════════ */
+        
+        .install-box {
+            background: var(--forge-charcoal);
+            border: 1px solid var(--forge-steel);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            max-width: 500px;
+            margin: 0 auto var(--space-xl);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .install-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--forge-ember), var(--forge-flame), var(--forge-spark));
+        }
+        
+        .install-box code {
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            color: var(--forge-white);
+            display: block;
+            padding: var(--space-md);
+            background: var(--forge-gunmetal);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--space-md);
+            text-align: left;
+        }
+        
+        .install-box code .prompt {
+            color: var(--forge-ember);
+        }
+        
+        .install-box .copy-btn {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: var(--space-sm) var(--space-lg);
+            background: linear-gradient(135deg, var(--forge-ember) 0%, var(--forge-flame) 100%);
+            color: var(--forge-void);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            width: 100%;
+        }
+        
+        .install-box .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+        
+        /* ═══════════════ MAIN ═══════════════ */
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 var(--space-lg) var(--space-2xl);
+        }
+        
+        /* ═══════════════ FEATURES ═══════════════ */
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-3xl);
+        }
+        
+        .feature {
+            background: var(--forge-charcoal);
+            border: 1px solid var(--forge-steel);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature:hover {
+            border-color: var(--forge-ember);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .feature::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--forge-ember), transparent);
+            opacity: 0;
+            transition: var(--transition-fast);
+        }
+        
+        .feature:hover::before {
+            opacity: 0.5;
+        }
+        
+        .feature .icon {
+            font-size: 2rem;
+            margin-bottom: var(--space-md);
+        }
+        
+        .feature h3 {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--forge-white);
+            margin-bottom: var(--space-sm);
+        }
+        
+        .feature p {
+            color: var(--forge-silver);
+            font-size: 0.95rem;
+        }
+        
+        /* ═══════════════ DEMO SECTION ═══════════════ */
+        
+        .demo-section {
+            margin-bottom: var(--space-3xl);
+        }
+        
+        .demo-section h2 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--forge-ember);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: var(--space-xl);
+        }
+        
+        .terminal {
+            background: var(--forge-charcoal);
+            border: 1px solid var(--forge-steel);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        .terminal-header {
+            background: var(--forge-gunmetal);
+            padding: var(--space-sm) var(--space-md);
+            display: flex;
+            gap: var(--space-sm);
+            border-bottom: 1px solid var(--forge-steel);
+        }
+        
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27ca40; }
+        
+        .terminal-body {
+            padding: var(--space-lg);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+        
+        .terminal-body .line {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .terminal-body .prompt {
+            color: var(--forge-ember);
+        }
+        
+        .terminal-body .command {
+            color: var(--forge-white);
+        }
+        
+        .terminal-body .output {
+            color: var(--forge-silver);
+        }
+        
+        .terminal-body .success {
+            color: var(--forge-success);
+        }
+        
+        .terminal-body .info {
+            color: var(--forge-spark);
+        }
+        
+        /* ═══════════════ SUPPORTED SECTION ═══════════════ */
+        
+        .supported-section {
+            margin-bottom: var(--space-3xl);
+        }
+        
+        .supported-section h2 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--forge-ember);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: var(--space-xl);
+        }
+        
+        .languages {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--space-md);
+        }
+        
+        .language {
+            background: var(--forge-charcoal);
+            border: 1px solid var(--forge-steel);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            text-align: center;
+            transition: var(--transition-fast);
+        }
+        
+        .language:hover {
+            border-color: var(--forge-ember);
+        }
+        
+        .language .icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .language h4 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            color: var(--forge-white);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .language p {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--forge-iron);
+        }
+        
+        /* ═══════════════ CLI OPTIONS ═══════════════ */
+        
+        .cli-section {
+            margin-bottom: var(--space-3xl);
+        }
+        
+        .cli-section h2 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--forge-ember);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: var(--space-xl);
+        }
+        
+        .cli-options {
+            background: var(--forge-charcoal);
+            border: 1px solid var(--forge-steel);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        .cli-option {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: var(--space-lg);
+            padding: var(--space-md) var(--space-lg);
+            border-bottom: 1px solid var(--forge-steel);
+        }
+        
+        .cli-option:last-child {
+            border-bottom: none;
+        }
+        
+        .cli-option code {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--forge-ember);
+        }
+        
+        .cli-option p {
+            color: var(--forge-silver);
+            font-size: 0.95rem;
+        }
+        
+        @media (max-width: 500px) {
+            .cli-option {
+                grid-template-columns: 1fr;
+                gap: var(--space-sm);
+            }
+        }
+        
+        /* ═══════════════ CTA ═══════════════ */
+        
+        .cta-section {
+            text-align: center;
+            padding: var(--space-3xl) var(--space-lg);
+            background: var(--forge-charcoal);
+            border: 1px solid var(--forge-steel);
+            border-radius: var(--radius-lg);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: var(--space-3xl);
+        }
+        
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--forge-ember), var(--forge-flame), var(--forge-spark));
+        }
+        
+        .cta-section h2 {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--forge-white);
+            margin-bottom: var(--space-md);
+        }
+        
+        .cta-section p {
+            color: var(--forge-silver);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: var(--space-md);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: var(--space-md) var(--space-xl);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--forge-ember) 0%, var(--forge-flame) 100%);
+            color: var(--forge-void);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--forge-gunmetal);
+            color: var(--forge-chrome);
+            border: 1px solid var(--forge-steel);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--forge-steel);
+            border-color: var(--forge-iron);
+        }
+        
+        /* ═══════════════ FOOTER ═══════════════ */
+        
+        .forge-footer {
+            background: var(--forge-charcoal);
+            border-top: 1px solid var(--forge-steel);
+            padding: var(--space-xl) var(--space-lg);
+        }
+        
+        .forge-footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-lg);
+        }
+        
+        .forge-footer-tools {
+            display: flex;
+            gap: var(--space-md);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .forge-footer-tools a {
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            color: var(--forge-silver);
+            text-decoration: none;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            transition: var(--transition-fast);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .forge-footer-tools a:hover { color: var(--forge-ember); }
+        
+        .forge-footer-meta {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--forge-iron);
+        }
+        
+        .forge-footer-meta a {
+            color: var(--forge-ember);
+            text-decoration: none;
+        }
+        
+        .forge-footer-meta a:hover { text-decoration: underline; }
+        
+        /* ═══════════════ ANIMATIONS ═══════════════ */
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hero, .features, .demo-section, .supported-section, .cli-section, .cta-section {
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        .features { animation-delay: 0.1s; }
+        .demo-section { animation-delay: 0.2s; }
+        .supported-section { animation-delay: 0.3s; }
+        
+        /* ═══════════════ RESPONSIVE ═══════════════ */
+        
+        @media (max-width: 700px) {
+            .forge-nav-links a {
+                font-size: 0.7rem;
+                padding: var(--space-xs);
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="forge-nav">
+        <div class="forge-nav-inner">
+            <a href="https://simplereally.github.io/invoice-forge/" class="forge-logo">
+                <span class="icon">🔥</span>
+                <span>FORGE</span>
+            </a>
+            <div class="forge-nav-links">
+                <a href="https://simplereally.github.io/invoice-forge/">Invoice</a>
+                <a href="https://simplereally.github.io/qr-forge/">QR</a>
+                <a href="https://simplereally.github.io/pass-forge/">Pass</a>
+                <a href="https://simplereally.github.io/color-forge/">Color</a>
+                <a href="https://simplereally.github.io/readme-forge/" class="active">Readme</a>
+            </div>
+        </div>
+    </nav>
+    
+    <header class="hero">
+        <h1>Readme<span class="accent">Forge</span></h1>
+        <p class="tagline">AI-powered README generator that analyzes your codebase and creates beautiful documentation — no API keys required!</p>
+        
+        <div class="badges">
+            <a href="https://www.npmjs.com/package/readme-forge"><img src="https://img.shields.io/npm/v/readme-forge.svg?style=flat-square&color=ff6b35" alt="npm version"></a>
+            <a href="https://www.npmjs.com/package/readme-forge"><img src="https://img.shields.io/npm/dm/readme-forge.svg?style=flat-square&color=ff8c42" alt="npm downloads"></a>
+            <a href="https://github.com/Simplereally/readme-forge/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-ffb366.svg?style=flat-square" alt="License: MIT"></a>
+        </div>
+        
+        <div class="install-box">
+            <code><span class="prompt">$</span> npx readme-forge</code>
+            <button class="copy-btn" onclick="copyCommand()">📋 Copy Command</button>
+        </div>
+    </header>
+    
+    <main class="container">
+        <section class="features">
+            <div class="feature">
+                <div class="icon">🔍</div>
+                <h3>Smart Analysis</h3>
+                <p>Automatically detects your project type and extracts metadata from config files</p>
+            </div>
+            <div class="feature">
+                <div class="icon">📝</div>
+                <h3>Beautiful Output</h3>
+                <p>Generates well-structured markdown with badges, table of contents, and proper formatting</p>
+            </div>
+            <div class="feature">
+                <div class="icon">🌐</div>
+                <h3>Multi-Language</h3>
+                <p>Supports Node.js, Python, Go, and Rust projects out of the box</p>
+            </div>
+            <div class="feature">
+                <div class="icon">🔒</div>
+                <h3>Offline First</h3>
+                <p>Works without API keys or internet — your code never leaves your machine</p>
+            </div>
+            <div class="feature">
+                <div class="icon">⚡</div>
+                <h3>Zero Config</h3>
+                <p>Just run the command and you're done — no setup or configuration needed</p>
+            </div>
+            <div class="feature">
+                <div class="icon">🎯</div>
+                <h3>Zero Dependencies</h3>
+                <p>Pure Node.js implementation with nothing to break or update</p>
+            </div>
+        </section>
+        
+        <section class="demo-section">
+            <h2>See It In Action</h2>
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                </div>
+                <div class="terminal-body">
+                    <div class="line"><span class="prompt">$</span> <span class="command">cd my-express-app</span></div>
+                    <div class="line"><span class="prompt">$</span> <span class="command">readme-forge</span></div>
+                    <div class="line"><span class="output"></span></div>
+                    <div class="line"><span class="info">🔨 readme-forge - Analyzing your project...</span></div>
+                    <div class="line"><span class="output"></span></div>
+                    <div class="line"><span class="success">✅ Detected: node project</span></div>
+                    <div class="line"><span class="output">📦 Name: my-express-app</span></div>
+                    <div class="line"><span class="output">📝 Description: A REST API server</span></div>
+                    <div class="line"><span class="output"></span></div>
+                    <div class="line"><span class="success">✨ Generated: README.md</span></div>
+                    <div class="line"><span class="output">   87 lines, 2.1KB</span></div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="supported-section">
+            <h2>Supported Languages</h2>
+            <div class="languages">
+                <div class="language">
+                    <div class="icon">📦</div>
+                    <h4>Node.js</h4>
+                    <p>package.json</p>
+                </div>
+                <div class="language">
+                    <div class="icon">🐍</div>
+                    <h4>Python</h4>
+                    <p>pyproject.toml, setup.py</p>
+                </div>
+                <div class="language">
+                    <div class="icon">🦫</div>
+                    <h4>Go</h4>
+                    <p>go.mod</p>
+                </div>
+                <div class="language">
+                    <div class="icon">🦀</div>
+                    <h4>Rust</h4>
+                    <p>Cargo.toml</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="cli-section">
+            <h2>CLI Options</h2>
+            <div class="cli-options">
+                <div class="cli-option">
+                    <code>-h, --help</code>
+                    <p>Show help message and available options</p>
+                </div>
+                <div class="cli-option">
+                    <code>-v, --version</code>
+                    <p>Display the current version number</p>
+                </div>
+                <div class="cli-option">
+                    <code>-f, --force</code>
+                    <p>Overwrite existing README.md without prompting</p>
+                </div>
+                <div class="cli-option">
+                    <code>-o, --output</code>
+                    <p>Specify custom output file path (default: README.md)</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="cta-section">
+            <h2>Ready to Generate?</h2>
+            <p>Stop spending hours writing documentation. Let ReadmeForge do it in seconds.</p>
+            <div class="cta-buttons">
+                <a href="https://www.npmjs.com/package/readme-forge" class="btn btn-primary">View on npm →</a>
+                <a href="https://github.com/Simplereally/readme-forge" class="btn btn-secondary">GitHub Repository</a>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="forge-footer">
+        <div class="forge-footer-inner">
+            <div class="forge-footer-tools">
+                <a href="https://simplereally.github.io/invoice-forge/">InvoiceForge</a>
+                <a href="https://simplereally.github.io/qr-forge/">QRForge</a>
+                <a href="https://simplereally.github.io/pass-forge/">PassForge</a>
+                <a href="https://simplereally.github.io/color-forge/">ColorForge</a>
+                <a href="https://simplereally.github.io/readme-forge/">ReadmeForge</a>
+            </div>
+            <div class="forge-footer-meta">
+                <p>Made with 🔥 by <a href="https://github.com/Simplereally">Simplereally</a></p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        function copyCommand() {
+            navigator.clipboard.writeText('npx readme-forge');
+            const btn = document.querySelector('.copy-btn');
+            btn.textContent = '✅ Copied!';
+            setTimeout(() => {
+                btn.textContent = '📋 Copy Command';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
